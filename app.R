@@ -104,6 +104,9 @@ ui <-
                               plotOutput("BarSummary"),
                               plotOutput('RadarSummary'),
                               tableOutput('SummaryTable')
+                            ),
+                            fluidPage(
+                              Password_UI(id = "PWD_sec4")
                             )
                     ),
                     
@@ -242,12 +245,12 @@ server = function(input, output, session) {
   
   
   #Disable menuitem when the app loads
-  sections <- list("section-2", "section-3", "section-4")
+  sections <- list("section-2", "section-3", "section-4", "section-5")
   
   addCssClass(selector = "a[data-value='section-2']", class = "inactiveLink")
   addCssClass(selector = "a[data-value='section-3']", class = "inactiveLink")
   addCssClass(selector = "a[data-value='section-4']", class = "inactiveLink")
-  # addCssClass(selector = "a[data-value='section-5']", class = "inactiveLink")
+  addCssClass(selector = "a[data-value='section-5']", class = "inactiveLink")
   
   
   # Set passwords for each screen
@@ -262,6 +265,10 @@ server = function(input, output, session) {
   entPW3 <- callModule(Password, id = "PWD_sec3")
   callModule(mod_server, id = "PWD_sec3", password = 300, 
              section = "a[data-value='section-4']", enteredPW=entPW3, moveTo="section-4", parent=session)
+  
+  entPW4 <- callModule(Password, id = "PWD_sec4")
+  callModule(mod_server, id = "PWD_sec4", password = 400, 
+             section = "a[data-value='section-5']", enteredPW=entPW4, moveTo="section-5", parent=session)
   
   output$influ1_nm <- renderText({
     paste0("Demographics for: ",input$influ1)
