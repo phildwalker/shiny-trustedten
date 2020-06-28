@@ -144,7 +144,7 @@ server = function(input, output, session) {
   # Create a unique file name, only one per session so that it will overwrite with user changes 
   session.id <- reactive({ 
       sprintf(
-      "%s_%s.rds",
+      "%s_%s.csv",
       as.integer(Sys.Date()),
       as.character(floor(runif(1)*1e20)) 
     )
@@ -160,7 +160,7 @@ server = function(input, output, session) {
     req(input$sidebarmenu)
 
     test <-
-      readRDS(here::here("responses",session.id())) %>%  #"18326_74194495053961871360.rds"
+      readr::read_csv(here::here("responses",session.id())) %>%  #"18326_74194495053961871360.rds"
       mutate_all(as.character) %>%
       pivot_longer(col=everything(), "fields", "values") %>%
       separate("fields", into = c("prefix", "type")) %>%
