@@ -28,9 +28,13 @@ saveData <- function(input, fileSaved) {
   # fileName <- session$token
   
   # Write the file to the local system
-  readr::write_csv(
-    x = data,
-    path = file.path(outputDir, fileSaved)
+  saveRDS(
+    object = data,
+    file = here::here(outputDir, fileSaved)
+  # readr::write_csv(
+  #   x = data,
+  #   path = here::here("responses", fileSaved)
+    # file = file.path(outputDir, fileSaved)
   )
 }
 
@@ -44,7 +48,7 @@ loadData <- function() {
     data <- data.frame(matrix(ncol = length(field_list), nrow = 0))
     names(data) <- field_list
   } else {
-    data <- lapply(files, function(x) readr::read_csv(x)) 
+    data <- lapply(files, function(x) readRDS(x)) 
     
     # Concatenate all data together into one data.frame
     data <- do.call(rbind, data)

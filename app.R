@@ -102,7 +102,7 @@ ui <-
                             
                             fluidRow(
                               plotOutput("BarSummary"),
-                              plotOutput('RadarSummary'),
+                              # plotOutput('RadarSummary'),
                               tableOutput('SummaryTable')
                             ),
                             fluidPage(
@@ -144,7 +144,7 @@ server = function(input, output, session) {
   # Create a unique file name, only one per session so that it will overwrite with user changes 
   session.id <- reactive({ 
       sprintf(
-      "%s_%s.csv",
+      "%s_%s.rds",
       as.integer(Sys.Date()),
       as.character(floor(runif(1)*1e20)) 
     )
@@ -160,7 +160,8 @@ server = function(input, output, session) {
     req(input$sidebarmenu)
 
     test <-
-      readr::read_csv(here::here("responses",session.id())) %>%  #"18326_74194495053961871360.rds"
+      readRDS(here::here("responses",session.id())) %>% 
+      # readr::read_csv(here::here("responses",session.id())) %>%  #"18326_74194495053961871360.rds"
       mutate_all(as.character) %>%
       pivot_longer(col=everything(), "fields", "values") %>%
       separate("fields", into = c("prefix", "type")) %>%
@@ -201,23 +202,23 @@ server = function(input, output, session) {
       mutate(PerMatch = Matches/count)
   })
   
-  output$RadarSummary <- renderPlot({
-    RadTbl <- summaryData()
-    
-    library(ggradar)
-    
-    RadTbl %>% 
-      group_by(type) %>%
-      summarise(count = n(),
-                Matches = sum(match)) %>%
-      ungroup() %>%
-      mutate(PerMatch = Matches/count) %>% 
-      select(-Matches) %>%
-      pivot_wider(names_from = "type", values_from= "PerMatch") %>% 
-      ggradar()
-      
-     
-  })
+  # output$RadarSummary <- renderPlot({
+  #   RadTbl <- summaryData()
+  #   
+  #   library(ggradar)
+  #   
+  #   RadTbl %>% 
+  #     group_by(type) %>%
+  #     summarise(count = n(),
+  #               Matches = sum(match)) %>%
+  #     ungroup() %>%
+  #     mutate(PerMatch = Matches/count) %>% 
+  #     select(-Matches) %>%
+  #     pivot_wider(names_from = "type", values_from= "PerMatch") %>% 
+  #     ggradar()
+  #     
+  #    
+  # })
 
   output$BarSummary <- renderPlot({
     BarTbl <- summaryData()
