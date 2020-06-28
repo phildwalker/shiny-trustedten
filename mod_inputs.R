@@ -1,6 +1,6 @@
 # module for input information
 
-outputDir <- "/responses"
+outputDir <- "responses"
 
 # Define the fields we want to save from the form
 fields <- c(
