@@ -15,6 +15,13 @@ source("pw_module.R")
 # Set up questionnaire interface ----
 ui <- 
   dashboardPagePlus(
+    
+    title = titlePanel("Trusted 10",
+               tags$head(tags$link(rel = "icon", type = "image/png", href = "icon.png"),
+                         tags$title("Trusted 10"))
+    ),
+    
+    
     skin = "red",
     sidebar_fullCollapse = TRUE,
     
