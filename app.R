@@ -49,16 +49,28 @@ ui <-
                             # actionButton("submit", "Submit"),
                             # tableOutput('SummaryTable'),
                             # plotOutput('RadarSummary'),
-                            box(
-                              title = "Your Demographics", status="primary", solidHeader = TRUE, collapsible = TRUE,
-                              select_gender(id="self_gender", wording="your"),
-                              select_age(id="self_age", wording="your"),
-                              select_SES(id = "self_SES", wording="your"),
-                              select_ED(id = "self_ED", wording="your")
-                                ),
-                            fluidPage(
-                              Password_UI(id = "PWD_sec1")
+                            fluidRow(
+                              fluidPage(
+                                box(
+                                  h5("Click button if you would like to change your selection."),
+                                 actionButton("show", "Censent Form")  
+                                )
+                              ),
+                              
+                              box(
+                                title = "Your Demographics", status="primary", solidHeader = TRUE, collapsible = TRUE,
+                                select_gender(id="self_gender", wording="your"),
+                                select_age(id="self_age", wording="your"),
+                                select_SES(id = "self_SES", wording="your"),
+                                select_ED(id = "self_ED", wording="your")
+                              ),
+                              
+                              fluidPage(
+                                Password_UI(id = "PWD_sec1")
+                              )
                             )
+                            
+                            
                     ),
                     
                     tabItem(tabName = "section-2",
@@ -147,6 +159,32 @@ ui <-
 
 # Reactive functions ----
 server = function(input, output, session) {
+  
+  # Return the UI for a modal dialog with data selection input. If 'failed' is
+  # TRUE, then display a message that the previous value was invalid.
+  dataModal <- function(failed = FALSE) {
+    modalDialog(
+      selectInput("consent", label= "Do you consent to the use of your data being used for research purposes",
+                    choices= c("Yes, you may use my data" = "yes",
+                               "No, do not use my data" = "no")
+      ),
+      # span('(Try the name of a valid data object like "mtcars", ',
+      #      'then a name of a non-existent object like "abc")'),
+
+      footer = tagList(
+        modalButton("Submit")
+      )
+    )
+  }
+  
+  # Show modal when button is clicked.
+  # observeEvent(input$show, {
+    showModal(dataModal())
+  # })
+
+  observeEvent(input$show, {
+    showModal(dataModal())
+  })
 
   # Create a unique file name, only one per session so that it will overwrite with user changes 
   session.id <- reactive({ 
