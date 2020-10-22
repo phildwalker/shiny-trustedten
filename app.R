@@ -10,6 +10,7 @@ source("mod_save_load.R")
 source("head_foot.R")
 source("pw_module.R")
 
+jscode <- 'window.onbeforeunload = function() { return "Please use the button on the webpage"; };'
 
 
 # Set up questionnaire interface ----
@@ -18,9 +19,9 @@ ui <-
     
     title = titlePanel("Trusted 10",
                tags$head(tags$link(rel = "icon", type = "image/png", href = "icon.png"),
+                         tags$head(tags$script(jscode)), # to provide an error message if they try to press the back button
                          tags$title("Trusted 10"))
     ),
-    
     
     skin = "red",
     sidebar_fullCollapse = TRUE,
@@ -33,10 +34,12 @@ ui <-
                   menuItem("Your Info",tabName = "section-1", icon = icon("user-circle") ),
                   menuItem( "Initialize Network",tabName = "section-2",icon = icon("people-carry") ),
                   menuItem("Description",tabName = "section-3",icon = icon("comments")),
-                  menuItem( "Results", tabName = "section-4", icon = icon("external-link-alt")),
-                  menuItem( "Discussion", tabName = "section-5", icon = icon("user-friends"))
+                  # menuItem( "Results", tabName = "section-4", icon = icon("external-link-alt")),
+                  menuItem( "Discussion", tabName = "section-4", icon = icon("user-friends"))
       )
     ),
+    
+    
     
     dashboardBody(useShinyjs(), useShinyalert(),
                   tabItems(
@@ -50,19 +53,28 @@ ui <-
                             # tableOutput('SummaryTable'),
                             # plotOutput('RadarSummary'),
                             fluidRow(
-                              fluidPage(
-                                box(
-                                  h5("Click button if you would like to change your selection."),
-                                 actionButton("show", "Censent Form")  
-                                )
-                              ),
+                              # fluidPage(
+                              #   box(
+                              #     h5("Click button if you would like to change your selection."),
+                              #     actionButton("show", "Censent Form"),
+                              #     textOutput("ConsentTxt")
+                              #     )
+                              #   ),
                               
                               box(
                                 title = "Your Demographics", status="primary", solidHeader = TRUE, collapsible = TRUE,
+                                select_School(id="self_school", wording="your"),
+                                select_Class(id="self_class", wording="your"),
+                                select_year(id="self_year", wording="your"),
                                 select_gender(id="self_gender", wording="your"),
+                                select_Orientation(id="self_orientation", wording="your"),
                                 select_age(id="self_age", wording="your"),
                                 select_SES(id = "self_SES", wording="your"),
-                                select_ED(id = "self_ED", wording="your")
+                                select_ED(id = "self_ED", wording="your"),
+                                select_Race(id = "self_Race", wording="your"),
+                                select_marital(id = "self_marital", wording="your"),
+                                select_able(id = "self_able", wording="your")
+                                
                               ),
                               
                               fluidPage(
@@ -75,11 +87,11 @@ ui <-
                     
                     tabItem(tabName = "section-2",
                             h2("Select the size of your advice network"),
-                            h4("Use the slider below to select the number of people you would typically will go to when seeking advice."),
-                            h4("After selecting how many, enter their names to help remind you when you move the next section."),
+                            h4("You are faced with a challenge, it is the biggest challenge you have ever faced. in order to solve it you reach out to those whom you trust the most, your inner circle. Who are those people?"),
+                            h4("You must list at least 7, but if possible try to list up to 10. List them in order of preference, you may toggle the slider at the top of the page to add or eliminate the number of people listed."),
                             box(
                               title = "Select the amount of people you regularly seek advice from:",
-                              sliderInput("amt", "", min = 5, max=10, value = 5),
+                              sliderInput("amt", "", min = 7, max=10, value = 7),
                               br(),
                               text_influ(personNum = 1),
                               text_influ(personNum = 2),
@@ -98,7 +110,7 @@ ui <-
                     ),
                     
                     tabItem(tabName = "section-3",
-                            h2("This is where a user give more information about their network"),
+                            h2("Please fill out the following demographic questions about each person you listed. "),
                             br(),
                             fullBox(linkNM = "influ1"),
                             fullBox(linkNM = "influ2"),
@@ -115,37 +127,63 @@ ui <-
                             )
                             ),
                     
-                    tabItem(tabName = "section-4",
-                            h2("Show the homophily of your network"),
-                            h4("How similar is your network?"),
-                            
-                            fluidRow(
-                              plotOutput("BarSummary"),
-                              # plotOutput('RadarSummary'),
-                              tableOutput('SummaryTable')
-                            ),
-                            fluidPage(
-                              Password_UI(id = "PWD_sec4")
-                            )
-                    ),
+                    # tabItem(tabName = "section-4",
+                    #         h2("Show the homophily of your network"),
+                    #         h4("How similar is your network?"),
+                    #         
+                    #         fluidRow(
+                    #           plotOutput("BarSummary"),
+                    #           # plotOutput('RadarSummary'),
+                    #           tableOutput('SummaryTable')
+                    #         ),
+                    #         fluidPage(
+                    #           Password_UI(id = "PWD_sec4")
+                    #         )
+                    # ),
                     
-                    tabItem(tabName = "section-5",
+                    tabItem(tabName = "section-4",
                             h4("Thank you for your participation in this exercise."), #'<br/>',
                             h5("We would like to now gather some feedback from you so that we can improve upon this exercise in future classes"),
+                            selectizeInput(inputId = "circle-bad", 
+                                          label= HTML("<strong>Feedback Question 1:</strong> <br>", paste0(" A trusted circle is a bad thing.")),
+                                          width = "1000px",
+                                          choices=list("True", "False"),
+                                          options = Placeholder_list
+                            ),
+                            textAreaInput(inputId = "define-bias", 
+                                          label= HTML("<strong>Feedback Question 2:</strong> <br>", paste0(" how would you define implicit bias?")),
+                                          width = "1000px"
+                            ),
+                            selectizeInput(inputId = "produce-bias", 
+                                          label= HTML("<strong>Feedback Question 3:</strong> <br>", paste0(" Implicit bias can be produced based on your trusted circle because....")),
+                                          width = "1000px",
+                                          choices=list("those poeple do not have your best intrests at heart", 
+                                                       "everyone has implicit biases",
+                                                       "we all have blind spots, and so we are limited by the views experiences and perceptions of our circles",
+                                                       "none of the above"),
+                                          options = Placeholder_list
+                            ),
+                            textAreaInput(inputId = "diversify", 
+                                          label= HTML("<strong>Feedback Question 4:</strong> <br>", paste0(" The best way to diversify your trusted circle is...")),
+                                          width = "1000px"
+                            ),
+                            
+                            
+                            
                             textAreaInput(inputId = "like-activity", 
-                                          label= HTML("<strong>Feedback Question 1:</strong> <br>", paste0(" What did you like about this activity?")),
+                                          label= HTML("<strong>Feedback Question 5:</strong> <br>", paste0(" What did you like about this activity?")),
                                           width = "1000px"
                             ),
                             textAreaInput(inputId = "learn-activity", 
-                                          label= HTML("<strong>Feedback Question 2:</strong> <br>", paste0(" What did you learn from this activity?")),
+                                          label= HTML("<strong>Feedback Question 6:</strong> <br>", paste0(" What did you learn from this activity?")),
                                           width = "1000px"
                             ),
                             textAreaInput(inputId = "change-activity", 
-                                          label= HTML("<strong>Feedback Question 3:</strong> <br>", paste0(" What would you change about this activity?")),
+                                          label= HTML("<strong>Feedback Question 7:</strong> <br>", paste0(" What would you change about this activity?")),
                                           width = "1000px"
                             ),
                             selectizeInput(inputId = "overall-activity", 
-                                           label= HTML("<strong>Question 4:</strong> <br>", paste0(" Overall I liked this activity:")),
+                                           label= HTML("<strong>Question 8:</strong> <br>", paste0(" Overall I liked this activity:")),
                                            choices=list("Strongly agree", "Agree", "Somewhat agree", "Somewhat disagree", "Disagree", "Strongly disagree"),
                                            options = Placeholder_list
                             )
@@ -168,8 +206,6 @@ server = function(input, output, session) {
                     choices= c("Yes, you may use my data" = "yes",
                                "No, do not use my data" = "no")
       ),
-      # span('(Try the name of a valid data object like "mtcars", ',
-      #      'then a name of a non-existent object like "abc")'),
 
       footer = tagList(
         modalButton("Submit")
@@ -177,9 +213,13 @@ server = function(input, output, session) {
     )
   }
   
+  output$ConsentTxt <- renderPrint({
+    cat("Thank you for making a selection. You have chosen: ", input$consent)
+  })
+  
   # Show modal when button is clicked.
   # observeEvent(input$show, {
-    showModal(dataModal())
+    # showModal(dataModal())
   # })
 
   observeEvent(input$show, {
@@ -303,6 +343,14 @@ server = function(input, output, session) {
   entPW <- callModule(Password, id = "PWD_sec1")
   callModule(mod_server, id = "PWD_sec1", password = 100, 
              section = "a[data-value='section-2']", enteredPW=entPW, moveTo="section-2", parent=session)
+  
+  observeEvent(input$btn, {
+    req(input$self_gender, input$self_age)
+
+  })
+  
+  # callModule(mod_server, id = "PWD_sec1", password = 100, 
+  #            section = "a[data-value='section-2']", enteredPW=entPW, moveTo="section-2", parent=session)
   
   entPW2 <- callModule(Password, id = "PWD_sec2")
   callModule(mod_server, id = "PWD_sec2", password = 200, 

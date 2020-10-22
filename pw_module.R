@@ -11,7 +11,7 @@ Password_UI <- function(id) {
       box(title = "Enter the password given to you by the instuctor:",
           textInput(inputId = ns("pwd"), label="", placeholder = "Sample hint text"), #"pwd1", label= paste0("Enter PW (",pwd,")"), 
           actionButton(ns("btn"), "Submit Password"),
-          textOutput(ns("pwdAnswer")),
+          # textOutput(ns("pwdAnswer")),
           textOutput(ns("passwordENTERED")),
           textOutput(ns("hello"))
       )

@@ -4,6 +4,7 @@ outputDir <- "responses"
 
 # Define the fields we want to save from the form
 fields <- c(
+  "consent",
   # responses about themselves
   "self_age", "self_gender", "self_SES","self_ED", "amt",
   # responses about their trusted circle          
@@ -25,6 +26,18 @@ fields <- c(
 Placeholder_list <- list(
   placeholder = 'Please select an option below',
   onInitialize = I('function() { this.setValue(""); }')
+)
+
+SchoolList <- list(
+  'School' = list("Elon", "ISU", "MSU",  "Other")
+)
+
+ClassList <- list(
+  'Class' = list("ESS341", "KIN345", "KIN445",  "Other")
+)
+
+yearScList <- list(
+  'Year' = list("1st", "2nd", "3rd", "4th", "5th")
 )
 
 AgeList <- list(
@@ -59,14 +72,17 @@ MaritalList <-  list(
 )
 
 AbleList <-  list(
-  'Disability Status' = list("Disabled", "Not Disabled", "Unknown")
+  'Disability Status' = list("Disability Present", "No Disabliity Present", "Unknown")
 )
 
+RelationshipList <-  list(
+  'Relationship' = list("Family Member", "Teacher", "Friend", "Boss", "Coach", "Other")
+)
 
 
 select_gender <- function(id="q1_gender", wording="their"){
   selectizeInput(inputId = id, 
-                 label= HTML("<strong>Question 1:</strong> <br>", paste0(" What is ",wording," gender?")),
+                 label= HTML("<strong>Question:</strong>", paste0(" What is ",wording," gender?")), # <br>
                  choices=SexList,
                  options = Placeholder_list
   )
@@ -75,7 +91,7 @@ select_gender <- function(id="q1_gender", wording="their"){
 
 select_age <- function(id = "q3_age", wording="their"){
   selectizeInput(inputId = id, 
-                             label=HTML("<strong>Question 3:</strong> <br>", paste0(" What is ",wording," age?")),
+                             label=HTML("<strong>Question:</strong>", paste0(" What is ",wording," age?")),
                              choices=AgeList,
                              options = Placeholder_list
                              )
@@ -83,7 +99,7 @@ select_age <- function(id = "q3_age", wording="their"){
  
 select_SES <- function(id = "q2_SES", wording="their"){
   selectizeInput(inputId = id, 
-                 label=HTML("<strong>Question 3:</strong> <br>", paste0(" What is ",wording," SES?")),
+                 label=HTML("<strong>Question:</strong> ", paste0(" What is ",wording," SES?")),
                  choices=SESList,
                  options = Placeholder_list
   )
@@ -91,17 +107,82 @@ select_SES <- function(id = "q2_SES", wording="their"){
 
 select_ED <- function(id = "q4_ED", wording="their"){
   selectizeInput(inputId = id, 
-                 label=HTML("<strong>Question 3:</strong> <br>", paste0(" What is ",wording," education level?")),
+                 label=HTML("<strong>Question:</strong>", paste0(" What is ",wording," education level?")),
                  choices=EduList,
                  options = Placeholder_list
   )
 } 
 
+select_School <- function(id = "q6_School", wording="their"){
+  selectizeInput(inputId = id, 
+                 label=HTML("<strong>Question:</strong>", paste0(" What is ",wording," school?")),
+                 choices=SchoolList,
+                 options = Placeholder_list
+  )
+}
+
+select_Class <- function(id = "q7_class", wording="their"){
+  selectizeInput(inputId = id, 
+                 label=HTML("<strong>Question:</strong> ", paste0(" What is ",wording," class?")),
+                 choices=ClassList,
+                 options = Placeholder_list
+  )
+}
+
+select_Race <- function(id = "q8_race", wording="their"){
+  selectizeInput(inputId = id, 
+                 label=HTML("<strong>Question:</strong>", paste0(" What is ",wording," Race/Ethnicity?")),
+                 choices=RaceList,
+                 options = Placeholder_list
+  )
+}
+
+select_Orientation <- function(id = "q9_orient", wording="their"){
+  selectizeInput(inputId = id, 
+                 label=HTML("<strong>Question:</strong> ", paste0(" What is ",wording," sexual orientation?")),
+                 choices=OrientationList,
+                 options = Placeholder_list
+  )
+}
+
+select_marital <- function(id = "q10_marital", wording="their"){
+  selectizeInput(inputId = id, 
+                 label=HTML("<strong>Question:</strong> ", paste0(" What is ",wording," marital status?")),
+                 choices=MaritalList,
+                 options = Placeholder_list
+  )
+}
+
+select_able <- function(id = "q11_able", wording="their"){
+  selectizeInput(inputId = id, 
+                 label=HTML("<strong>Question:</strong> ", paste0(" What is ",wording," disability status?")),
+                 choices=AbleList,
+                 options = Placeholder_list
+  )
+}
+
+select_year <- function(id = "q12_year", wording="their"){
+  selectizeInput(inputId = id, 
+                 label=HTML("<strong>Question:</strong> ", paste0(" What is ",wording," year in school?")),
+                 choices=yearScList,
+                 options = Placeholder_list
+  )
+}
+
+select_relationship <- function(id = "q13_relationship", wording="their"){
+  selectizeInput(inputId = id, 
+                 label=HTML("<strong>Question:</strong> ", paste0(" What is ",wording," relationship to you?")),
+                 choices=RelationshipList,
+                 options = Placeholder_list
+  )
+}
+
+
 text_sample <- textInput(inputId = "q4_text", 
                          label= "Question 4", placeholder = "Sample hint text")
 
 text_influ <- function(id = "influ", personNum){
-  textInput(paste0(id,personNum), paste0("Influence name ",personNum), placeholder = "Type the name of the person") #, value = " "
+  textInput(paste0(id,personNum), paste0("Name ",personNum), placeholder = "Type the name of the person") #, value = " "
 }
 
 
@@ -112,6 +193,12 @@ fullBox <- function(linkNM){
   div(id = paste0("outer-",linkNM),
     box(id = paste0("box",linkNM),
         title = textOutput(boxTitle), status="primary", solidHeader = TRUE, collapsible = TRUE, collapsed=TRUE,
+        select_relationship(id=paste0(linkNM,"_relation")),
+        select_Race(id=paste0(linkNM,"_race")),
+        select_Orientation(id=paste0(linkNM,"_orientation")),
+        select_marital(id=paste0(linkNM,"_marital")),
+        select_able(id=paste0(linkNM,"_able")),
+        
         select_gender(id=paste0(linkNM,"_gender")),
         select_age(id=paste0(linkNM,"_age")),
         select_SES(id = paste0(linkNM,"_SES")),
