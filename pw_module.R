@@ -9,7 +9,7 @@ Password_UI <- function(id) {
   # fluidPage(
     fluidRow(
       box(title = "Enter the password given to you by the instuctor:",
-          textInput(inputId = ns("pwd"), label="", placeholder = "Sample hint text"), #"pwd1", label= paste0("Enter PW (",pwd,")"), 
+          textInput(inputId = ns("pwd"), label="", placeholder = "Wait until instruction given"), #"pwd1", label= paste0("Enter PW (",pwd,")"), 
           actionButton(ns("btn"), "Submit Password"),
           # textOutput(ns("pwdAnswer")),
           textOutput(ns("passwordENTERED")),

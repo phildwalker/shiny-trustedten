@@ -35,7 +35,8 @@ ui <-
                   menuItem( "Initialize Network",tabName = "section-2",icon = icon("people-carry") ),
                   menuItem("Description",tabName = "section-3",icon = icon("comments")),
                   # menuItem( "Results", tabName = "section-4", icon = icon("external-link-alt")),
-                  menuItem( "Discussion", tabName = "section-4", icon = icon("user-friends"))
+                  menuItem( "Discussion", tabName = "section-4", icon = icon("user-friends")),
+                  menuItem( "Conclusion", tabName = "section-5", icon = icon("check-circle"))
       )
     ),
     
@@ -87,7 +88,7 @@ ui <-
                     
                     tabItem(tabName = "section-2",
                             h2("Select the size of your advice network"),
-                            h4("You are faced with a challenge, it is the biggest challenge you have ever faced. in order to solve it you reach out to those whom you trust the most, your inner circle. Who are those people?"),
+                            h4("You are faced with a challenge, it is the biggest challenge you have ever faced. In order to solve it you reach out to those whom you trust the most, your inner circle. Who are those people?"),
                             h4("You must list at least 7, but if possible try to list up to 10. List them in order of preference, you may toggle the slider at the top of the page to add or eliminate the number of people listed."),
                             box(
                               title = "Select the amount of people you regularly seek advice from:",
@@ -145,17 +146,20 @@ ui <-
                             h4("Thank you for your participation in this exercise."), #'<br/>',
                             h5("We would like to now gather some feedback from you so that we can improve upon this exercise in future classes"),
                             selectizeInput(inputId = "circle-bad", 
-                                          label= HTML("<strong>Feedback Question 1:</strong> <br>", paste0(" A trusted circle is a bad thing.")),
+                                          label= HTML("<strong>Feedback Question 1:</strong> <br>", 
+                                                      paste0(" A trusted circle is a bad thing.")),
                                           width = "1000px",
                                           choices=list("True", "False"),
                                           options = Placeholder_list
                             ),
                             textAreaInput(inputId = "define-bias", 
-                                          label= HTML("<strong>Feedback Question 2:</strong> <br>", paste0(" how would you define implicit bias?")),
+                                          label= HTML("<strong>Feedback Question 2:</strong> <br>", 
+                                                      paste0(" how would you define implicit bias?")),
                                           width = "1000px"
                             ),
                             selectizeInput(inputId = "produce-bias", 
-                                          label= HTML("<strong>Feedback Question 3:</strong> <br>", paste0(" Implicit bias can be produced based on your trusted circle because....")),
+                                          label= HTML("<strong>Feedback Question 3:</strong> <br>", 
+                                                      paste0(" Implicit bias can be produced based on your trusted circle because....")),
                                           width = "1000px",
                                           choices=list("those poeple do not have your best intrests at heart", 
                                                        "everyone has implicit biases",
@@ -164,29 +168,45 @@ ui <-
                                           options = Placeholder_list
                             ),
                             textAreaInput(inputId = "diversify", 
-                                          label= HTML("<strong>Feedback Question 4:</strong> <br>", paste0(" The best way to diversify your trusted circle is...")),
+                                          label= HTML("<strong>Feedback Question 4:</strong> <br>", 
+                                                      paste0(" The best way to diversify your trusted circle is...")),
                                           width = "1000px"
                             ),
                             
                             
                             
                             textAreaInput(inputId = "like-activity", 
-                                          label= HTML("<strong>Feedback Question 5:</strong> <br>", paste0(" What did you like about this activity?")),
+                                          label= HTML("<strong>Feedback Question 5:</strong> <br>", 
+                                                      paste0(" What did you like about this activity?")),
                                           width = "1000px"
                             ),
                             textAreaInput(inputId = "learn-activity", 
-                                          label= HTML("<strong>Feedback Question 6:</strong> <br>", paste0(" What did you learn from this activity?")),
+                                          label= HTML("<strong>Feedback Question 6:</strong> <br>", 
+                                                      paste0(" What did you learn from this activity?")),
                                           width = "1000px"
                             ),
                             textAreaInput(inputId = "change-activity", 
-                                          label= HTML("<strong>Feedback Question 7:</strong> <br>", paste0(" What would you change about this activity?")),
+                                          label= HTML("<strong>Feedback Question 7:</strong> <br>", 
+                                                      paste0(" What would you change about this activity?")),
                                           width = "1000px"
                             ),
                             selectizeInput(inputId = "overall-activity", 
-                                           label= HTML("<strong>Question 8:</strong> <br>", paste0(" Overall I liked this activity:")),
+                                           label= HTML("<strong>Question 8:</strong> <br>", 
+                                                       paste0(" Overall I liked this activity:")),
                                            choices=list("Strongly agree", "Agree", "Somewhat agree", "Somewhat disagree", "Disagree", "Strongly disagree"),
                                            options = Placeholder_list
+                            ),
+                            fluidPage(
+                              Password_UI(id = "PWD_sec4")
+                              # actionButton("FinalPage", " Move to final section")
                             )
+                    ),
+                    tabItem(tabName = "section-5",
+                            br(),
+                            br(),
+                            h2("Thank you for your participation!", align = "center"),
+                            h4("How similar is your network?", align = "center")
+                            
                     )
                     
                   )),
@@ -226,6 +246,19 @@ server = function(input, output, session) {
     showModal(dataModal())
   })
 
+  observeEvent(input$FinalPage, {
+    saveData(input, session.id())
+    updateTabItems(session, "sidebarmenu", selected = "section-5")
+  })
+  
+  observeEvent(input$FinalPage, {
+    newtab <- switch(input$tabs,
+                     "dashboard" = "widgets",
+                     "widgets" = "dashboard"
+    )
+    updateTabItems(session, "tabs", newtab)
+  })
+  
   # Create a unique file name, only one per session so that it will overwrite with user changes 
   session.id <- reactive({ 
       sprintf(

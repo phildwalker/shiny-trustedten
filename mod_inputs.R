@@ -5,21 +5,21 @@ outputDir <- "responses"
 # Define the fields we want to save from the form
 fields <- c(
   "consent",
-  # responses about themselves
-  "self_age", "self_gender", "self_SES","self_ED", "amt",
+  # responses about themselves		
+  "self_school", "self_class", "self_year", "self_gender", "self_orientation", "self_age", "self_SES", "self_ED", "self_Race", "self_marital", "self_able", "amt",
   # responses about their trusted circle          
-  "influ1_age", "influ1_gender", "influ1_SES","influ1_ED",
-  "influ2_age", "influ2_gender", "influ2_SES","influ2_ED",
-  "influ3_age", "influ3_gender", "influ3_SES","influ3_ED",
-  "influ4_age", "influ4_gender", "influ4_SES","influ4_ED",
-  "influ5_age", "influ5_gender", "influ5_SES","influ5_ED",
-  "influ6_age", "influ6_gender", "influ6_SES","influ6_ED",
-  "influ7_age", "influ7_gender", "influ7_SES","influ7_ED",
-  "influ8_age", "influ8_gender", "influ8_SES","influ8_ED",
-  "influ9_age", "influ9_gender", "influ9_SES","influ9_ED",
-  "influ10_age", "influ10_gender", "influ10_SES","influ10_ED",
+  "influ1_relation", "influ1_race", "influ1_orientation","influ1_marital", "influ1_able", "influ1_gender","influ1_age", "influ1_SES","influ1_ED",
+  "influ2_relation", "influ2_race", "influ2_orientation","influ2_marital", "influ2_able", "influ2_gender","influ2_age", "influ2_SES","influ2_ED",
+  "influ3_relation", "influ3_race", "influ3_orientation","influ3_marital", "influ3_able", "influ3_gender","influ3_age", "influ3_SES","influ3_ED",
+  "influ4_relation", "influ4_race", "influ4_orientation","influ4_marital", "influ4_able", "influ4_gender","influ4_age", "influ4_SES","influ4_ED",
+  "influ5_relation", "influ5_race", "influ5_orientation","influ5_marital", "influ5_able", "influ5_gender","influ5_age", "influ5_SES","influ5_ED",
+  "influ6_relation", "influ6_race", "influ6_orientation","influ6_marital", "influ6_able", "influ6_gender","influ6_age", "influ6_SES","influ6_ED",
+  "influ7_relation", "influ7_race", "influ7_orientation","influ7_marital", "influ7_able", "influ7_gender","influ7_age", "influ7_SES","influ7_ED",
+  "influ8_relation", "influ8_race", "influ8_orientation","influ8_marital", "influ8_able", "influ8_gender","influ8_age", "influ8_SES","influ8_ED",
+  "influ9_relation", "influ9_race", "influ9_orientation","influ9_marital", "influ9_able", "influ9_gender","influ9_age", "influ9_SES","influ9_ED",
+  "influ10_relation", "influ10_race", "influ10_orientation","influ10_marital", "influ10_able", "influ10_gender","influ10_age", "influ10_SES","influ10_ED",
   # feedback on experience
-  "like-activity", "learn-activity", "change-activity", "overall-activity"
+  "circle-bad", "define-bias", "produce-bias", "diversify", "like-activity", "learn-activity", "change-activity", "overall-activity"  
 )
 
 
