@@ -15,8 +15,9 @@ jscode <- 'window.onbeforeunload = function() { return "Please use the button on
 
 # Set up questionnaire interface ----
 ui <- 
-  dashboardPagePlus(
-    
+  # dashboardPagePlus(
+    dashboardPage(
+      
     title = titlePanel("Trusted 10",
                tags$head(tags$link(rel = "icon", type = "image/png", href = "icon.png"),
                          tags$head(tags$script(jscode)), # to provide an error message if they try to press the back button
@@ -24,7 +25,7 @@ ui <-
     ),
     
     skin = "red",
-    sidebar_fullCollapse = TRUE,
+    # sidebar_fullCollapse = TRUE,
     
     dashboardHeader(title = "Personal Network"),
     
@@ -210,8 +211,8 @@ ui <-
                     )
                     
                   )),
-    footer = dashboardFooter(left_text = leftText,
-                             right_text = rightText)
+    footer = dashboardFooter(left = leftText,
+                             right = rightText)
   )
     
 
